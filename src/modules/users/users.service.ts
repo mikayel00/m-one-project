@@ -33,7 +33,7 @@ export class UsersService {
       .exec();
   }
 
-  async getAllUsers() {
+  async getAllUsers(): Promise<UserResponse[]> {
     return await this.userModel.find().select(EXCLUDED_FIELDS).exec();
   }
 }
