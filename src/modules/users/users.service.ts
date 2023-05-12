@@ -5,6 +5,7 @@ import { User, UserDocument } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { UserResponse } from './responses/user-response';
+import { EXCLUDED_FIELDS } from './constants';
 
 @Injectable()
 export class UsersService {
@@ -23,5 +24,16 @@ export class UsersService {
     data.password = await this.hashPassword(data.password);
     const createdUser = new this.userModel(data);
     return await createdUser.save();
+  }
+
+  async publicUser(email: string): Promise<UserResponse> {
+    return await this.userModel
+      .findOne({ email: email })
+      .select(EXCLUDED_FIELDS)
+      .exec();
+  }
+
+  async getAllUsers() {
+    return await this.userModel.find().select(EXCLUDED_FIELDS).exec();
   }
 }
