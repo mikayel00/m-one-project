@@ -7,9 +7,9 @@ import {
 } from '@nestjs/swagger';
 import { UserCreateDto } from '../users/dtos/user-create.dto';
 import { AuthService } from './auth.service';
-import { UserResponse } from '../users/responses/user-response';
 import { AuthResponse } from './responses/auth-response';
 import { UserLoginDto } from './dtos/auth.dto';
+import { User } from '../users/schemas/user.schema';
 
 @Controller('auth')
 @ApiTags('Auth Endpoints')
@@ -21,7 +21,7 @@ export class AuthController {
     description: 'Register user',
   })
   @Post('/register')
-  register(@Body() data: UserCreateDto): Promise<UserResponse> {
+  register(@Body() data: UserCreateDto): Promise<User> {
     return this.authService.registerUser(data);
   }
 

@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { UserResponse } from '../../users/responses/user-response';
+import { User } from '../../users/schemas/user.schema';
 
 export class AuthResponse {
   @ApiProperty({
     description: 'Auth user',
   })
-  user: UserResponse;
+  user: User;
 
   @ApiProperty({
     description: 'Auth token',
