@@ -1,1 +1,1 @@
-export const EXCLUDED_FIELDS = ['-password'];
+export const EXCLUDED_FIELDS = ['password'];

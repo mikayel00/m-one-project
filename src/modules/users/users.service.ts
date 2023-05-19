@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UserCreateDto } from './dtos/user-create.dto';
-import { Model } from 'mongoose';
-import { User, UserDocument } from './schemas/user.schema';
-import { InjectModel } from '@nestjs/mongoose';
+import { User } from './models/user.model';
+import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import { EXCLUDED_FIELDS } from './constants';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User) private readonly userRepository: typeof User,
   ) {}
 
   async hashPassword(password: string): Promise<string> {
@@ -17,23 +16,32 @@ export class UsersService {
   }
 
   async findUserByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email: email }).exec();
+    return this.userRepository.findOne({ where: { email } });
   }
 
-  async createUser(data: UserCreateDto): Promise<User> {
+  async createUser(data: UserCreateDto): Promise<UserCreateDto> {
     data.password = await this.hashPassword(data.password);
-    const createdUser = new this.userModel(data);
-    return createdUser.save();
+    await this.userRepository.create({
+      firstName: data.firstName,
+      secondName: data.secondName,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      age: data.age,
+    });
+    return data;
   }
 
   async publicUser(email: string): Promise<User> {
-    return this.userModel
-      .findOne({ email: email })
-      .select(EXCLUDED_FIELDS)
-      .exec();
+    return this.userRepository.findOne({
+      where: { email },
+      attributes: { exclude: EXCLUDED_FIELDS },
+    });
   }
 
   async getAllUsers(): Promise<User[]> {
-    return this.userModel.find().select(EXCLUDED_FIELDS).exec();
+    return this.userRepository.findAll({
+      attributes: { exclude: EXCLUDED_FIELDS },
+    });
   }
 }
