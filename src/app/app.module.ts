@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configs from './config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../modules/auth/auth.module';
 import { UsersModule } from '../modules/users/users.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from '../modules/users/models/user.model';
 
 @Module({
   imports: [
@@ -11,11 +12,18 @@ import { UsersModule } from '../modules/users/users.module';
       isGlobal: true,
       load: [configs],
     }),
-    MongooseModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('MONGODB_URL'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+    SequelizeModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        dialect: 'postgres',
+        host: configService.get('POSTGRES.HOST'),
+        port: configService.get('POSTGRES.PORT'),
+        username: configService.get('POSTGRES.USER'),
+        password: configService.get('POSTGRES.PASSWORD'),
+        database: configService.get('POSTGRES.NAME'),
+        synchronize: true,
+        autoLoadModels: true,
+        models: [User],
       }),
       inject: [ConfigService],
     }),
