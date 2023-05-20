@@ -4,6 +4,8 @@ import { User } from './models/user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import { EXCLUDED_FIELDS } from './constants';
+import { UserFilterDto } from './dtos/user-find.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -39,8 +41,19 @@ export class UsersService {
     });
   }
 
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers(filter: UserFilterDto): Promise<User[]> {
+    const searchBody = [];
+    for (const val in filter) {
+      if (+filter[val]) {
+        searchBody.push({ [val]: { [Op.eq]: +filter[val] } });
+      } else {
+        searchBody.push({ [val]: { [Op.substring]: filter[val] } });
+      }
+    }
     return this.userRepository.findAll({
+      where: {
+        [Op.and]: [searchBody],
+      },
       attributes: { exclude: EXCLUDED_FIELDS },
     });
   }

@@ -1,8 +1,9 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../common/guards/jwt-guard';
 import { User } from './models/user.model';
+import { UserFilterDto } from './dtos/user-find.dto';
 
 @Controller('users')
 @ApiTags('User Endpoints')
@@ -27,7 +28,7 @@ export class UsersController {
   })
   @Get()
   @UseGuards(JwtAuthGuard)
-  getUsers(): Promise<User[]> {
-    return this.usersService.getAllUsers();
+  getUsers(@Query() filter: UserFilterDto): Promise<User[]> {
+    return this.usersService.getAllUsers(filter);
   }
 }
