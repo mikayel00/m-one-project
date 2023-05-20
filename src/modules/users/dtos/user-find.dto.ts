@@ -21,4 +21,18 @@ export class UserFilterDto {
   })
   @IsOptional()
   age: number;
+
+  @ApiProperty({
+    description: 'Username',
+  })
+  @IsOptional()
+  @IsString()
+  username: string;
+
+  @ApiProperty({
+    description: 'Username',
+  })
+  @IsOptional()
+  @IsString()
+  email: string;
 }
