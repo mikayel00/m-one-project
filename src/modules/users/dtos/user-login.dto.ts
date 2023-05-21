@@ -32,10 +32,4 @@ export class UserLoginDto {
   @IsEmail()
   @IsString()
   email: string;
-
-  @ApiProperty({
-    description: "User's password",
-  })
-  @IsString()
-  password: string;
 }
