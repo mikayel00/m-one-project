@@ -41,7 +41,7 @@ export class UsersService {
     });
   }
 
-  async getAllUsers(filter: UserFilterDto): Promise<User[]> {
+  async getAllUsers(filter: UserFilterDto): Promise<UserFilterDto[]> {
     const searchBody = [];
     for (const val in filter) {
       if (+filter[val]) {

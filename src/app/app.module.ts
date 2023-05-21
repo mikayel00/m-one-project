@@ -5,6 +5,9 @@ import { AuthModule } from '../modules/auth/auth.module';
 import { UsersModule } from '../modules/users/users.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '../modules/users/models/user.model';
+import { FriendlistModule } from '../modules/friendlist/friendlist.module';
+import { RequestModel } from '../modules/friendlist/models/request.model';
+import { Friendship } from '../modules/friendlist/models/friendship.model';
 
 @Module({
   imports: [
@@ -23,12 +26,13 @@ import { User } from '../modules/users/models/user.model';
         database: configService.get('POSTGRES.NAME'),
         synchronize: true,
         autoLoadModels: true,
-        models: [User],
+        models: [User, Friendship, RequestModel],
       }),
       inject: [ConfigService],
     }),
     AuthModule,
     UsersModule,
+    FriendlistModule,
   ],
   controllers: [],
   providers: [],

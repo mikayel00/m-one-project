@@ -1,4 +1,6 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, HasMany, Model, Table } from 'sequelize-typescript';
+import { Friendship } from '../../friendlist/models/friendship.model';
+import { RequestModel } from '../../friendlist/models/request.model';
 
 @Table
 export class User extends Model {
@@ -20,6 +22,12 @@ export class User extends Model {
   @Column
   password: string;
 
-  @Column
-  friends: string;
+  @HasMany(() => Friendship, 'userId')
+  friendships: Friendship[];
+
+  @HasMany(() => RequestModel, 'senderId')
+  sentRequests: RequestModel[];
+
+  @HasMany(() => RequestModel, 'receiverId')
+  receivedRequests: RequestModel[];
 }

@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../common/guards/jwt-guard';
 import { User } from './models/user.model';
 import { UserFilterDto } from './dtos/user-find.dto';
+import { UserLoginDto } from './dtos/user-login.dto';
 
 @Controller('users')
 @ApiTags('User Endpoints')
@@ -11,7 +12,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @ApiOperation({ summary: 'Get authorized user data' })
   @ApiOkResponse({
-    type: User,
+    type: UserLoginDto,
     description: 'Get authorized user data',
   })
   @Get('/get-data')
@@ -23,12 +24,12 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get users by filter' })
   @ApiOkResponse({
-    type: [User],
+    type: [UserFilterDto],
     description: 'Get users by filter',
   })
   @Get()
   @UseGuards(JwtAuthGuard)
-  getUsers(@Query() filter: UserFilterDto): Promise<User[]> {
+  getUsers(@Query() filter: UserFilterDto): Promise<UserFilterDto[]> {
     return this.usersService.getAllUsers(filter);
   }
 }
